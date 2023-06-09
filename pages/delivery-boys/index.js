@@ -47,18 +47,18 @@ const DeliveryBoys = () => {
     setEdditNewBoyDialog(true);
   }
   useEffect(() => {
-    // const fetchDeliveryBoys = async () => {
-    //   try {
-    //     const data = await fetch("/api/get-delivery-boys");
-    //     const fetchedDeliveryBoys = await data.json();
-    //     console.log(fetchedDeliveryBoys);
-    //     setDeliveryBoysList(fetchedDeliveryBoys);
-    //   } catch (error) {
-    //     console.error("Error fetching users:", error);
-    //   }
-    // };
+    const fetchDeliveryBoys = async () => {
+      try {
+        const data = await fetch("/api/get-delivery-boys");
+        const fetchedDeliveryBoys = await data.json();
+        console.log(fetchedDeliveryBoys);
+        setDeliveryBoysList(fetchedDeliveryBoys);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
 
-    // fetchDeliveryBoys();
+    fetchDeliveryBoys();
   }, []);
   //   useEffect(() => {
   //     setProducts(ProductService.getProductsData());
