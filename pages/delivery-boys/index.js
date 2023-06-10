@@ -7,18 +7,17 @@ import { Dialog } from "primereact/dialog";
 
 import { InputText } from "primereact/inputtext";
 import NewBoyDialog from "@/components/delivery-boys/new-boy-dialog";
+import EditBoyDialog from "@/components/delivery-boys/edit-boy-dialog";
 
 const DeliveryBoys = () => {
   // status of dialogs adding and edditing
   const [addNewBoyDialog, setAddNewBoyDialog] = useState(false);
-  const [edditNewBoyDialog, setEdditNewBoyDialog] = useState(false);
+  const [editBoyDialog, setEditBoyDialog] = useState(false);
 
+  const [currentEditableBoyInfo, setCurrentEditableBoyInfo] = useState(null);
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
 
-  function handleEdditDeliveryBoy(id) {
-    console.log(id);
-    setEdditNewBoyDialog(true);
-  }
+  function handleEdditDeliveryBoy(id) {}
 
   useEffect(() => {
     const fetchDeliveryBoys = async () => {
@@ -33,7 +32,7 @@ const DeliveryBoys = () => {
     };
 
     fetchDeliveryBoys();
-  }, [addNewBoyDialog, edditNewBoyDialog]);
+  }, [addNewBoyDialog, editBoyDialog]);
 
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -59,75 +58,12 @@ const DeliveryBoys = () => {
         setAddNewBoyDialog={setAddNewBoyDialog}
       />
       {/* ########################################################## */}
-      {/* <Dialog
-        header={<h3>Eddit Delivery Boy</h3>}
-        footer={
-          <div>
-            <Button className="gap-2" icon="pi pi-trash" severity="danger">
-              Delete
-            </Button>
-            <Button
-              className="gap-2"
-              icon="pi pi-check-circle"
-              severity="primary"
-            >
-              Submit changes
-            </Button>
-          </div>
-        }
-        visible={edditNewBoyDialog}
-        style={{ width: "50vw" }}
-        onHide={() => setEdditNewBoyDialog(false)}
-      >
-        <form className="flex flex-col  gap-5 justify-center items-center mt-4">
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="name"
-                value={deliveryBoyInfo.name}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    name: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="name">Full Name</label>
-            </span>
-          </div>
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="phone"
-                type="tel"
-                value={deliveryBoyInfo.phone}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    phone: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="phone">Phone Number</label>
-            </span>
-          </div>
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="avatar"
-                value={deliveryBoyInfo.avatar}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    avatar: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="avatar">Image Name ('yasser.png')</label>
-            </span>
-          </div>
-        </form>
-      </Dialog> */}
+      <EditBoyDialog
+        editBoyDialog={editBoyDialog}
+        setEditBoyDialog={setEditBoyDialog}
+        currentEditableBoyInfo={currentEditableBoyInfo}
+        setCurrentEditableBoyInfo={setCurrentEditableBoyInfo}
+      />
 
       <DataTable
         value={deliveryBoysList}
@@ -153,7 +89,10 @@ const DeliveryBoys = () => {
           header="Eddit"
           body={(target) => (
             <Button
-              onClick={() => handleEdditDeliveryBoy(target.id)}
+              onClick={() => {
+                setCurrentEditableBoyInfo(target);
+                setEditBoyDialog(true);
+              }}
               size="small"
             >
               Eddit

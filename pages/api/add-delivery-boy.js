@@ -21,5 +21,8 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    // Disconnect the Prisma client
+    await prisma.$disconnect();
   }
 }
