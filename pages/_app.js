@@ -14,6 +14,7 @@ import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import "../styles/layout/layout.scss";
 import "../styles/demo/Demos.scss";
+import { Toast } from "primereact/toast";
 
 export default function MyApp({ Component, pageProps }) {
   if (Component.getLayout) {
@@ -26,7 +27,10 @@ export default function MyApp({ Component, pageProps }) {
     return (
       <LayoutProvider>
         <Layout>
-          <Component {...pageProps} />
+          
+
+            <Component {...pageProps} />
+          
         </Layout>
       </LayoutProvider>
     );

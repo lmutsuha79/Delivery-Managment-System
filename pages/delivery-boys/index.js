@@ -6,46 +6,20 @@ import { Avatar } from "primereact/avatar";
 import { Dialog } from "primereact/dialog";
 
 import { InputText } from "primereact/inputtext";
+import NewBoyDialog from "@/components/delivery-boys/new-boy-dialog";
 
 const DeliveryBoys = () => {
-  //   const ProductService = {
-  //     getProductsData() {
-  //       return [
-  //         {
-  //           id: "1",
-  //           name: "Khelil Yasser",
-  //           avatar: "yasser.png",
-  //           phone: "0794082989",
-  //         },
-  //         {
-  //           id: "2",
-  //           name: "Zino Bouabdalh",
-  //           avatar: "zino.jpg",
-  //           phone: "0578964533",
-  //         },
-  //         {
-  //           id: "3",
-  //           name: "Keroucha Sarim",
-  //           avatar: "sarim.jpg",
-  //           phone: "0677984521",
-  //         },
-  //       ];
-  //     },
-  //   };
-
+  // status of dialogs adding and edditing
   const [addNewBoyDialog, setAddNewBoyDialog] = useState(false);
   const [edditNewBoyDialog, setEdditNewBoyDialog] = useState(false);
-  const [deliveryBoyInfo, SetDeliveryBoyInfo] = useState({
-    name: "",
-    phone: "",
-    avatar: "",
-  });
+
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
 
   function handleEdditDeliveryBoy(id) {
     console.log(id);
     setEdditNewBoyDialog(true);
   }
+
   useEffect(() => {
     const fetchDeliveryBoys = async () => {
       try {
@@ -59,10 +33,8 @@ const DeliveryBoys = () => {
     };
 
     fetchDeliveryBoys();
-  }, []);
-  //   useEffect(() => {
-  //     setProducts(ProductService.getProductsData());
-  //   }, []);
+  }, [addNewBoyDialog, edditNewBoyDialog]);
+
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
       <span className="text-xl text-900 font-bold">List Of Deliver Boys</span>
@@ -82,71 +54,12 @@ const DeliveryBoys = () => {
   } delivery boys.`;
   return (
     <div>
-      <Dialog
-        header={<h3>Add new Delivery Boy</h3>}
-        footer={
-          <Button
-            className="gap-2"
-            icon="pi pi-check-circle"
-            severity="primary"
-          >
-            Confirme Adding
-          </Button>
-        }
-        visible={addNewBoyDialog}
-        style={{ width: "50vw" }}
-        onHide={() => setAddNewBoyDialog(false)}
-      >
-        <form className="flex flex-col  gap-5 justify-center items-center mt-4">
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="name"
-                value={deliveryBoyInfo.name}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    name: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="name">Full Name</label>
-            </span>
-          </div>
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="phone"
-                type="tel"
-                value={deliveryBoyInfo.phone}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    phone: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="phone">Phone Number</label>
-            </span>
-          </div>
-          <div>
-            <span className="p-float-label">
-              <InputText
-                id="avatar"
-                value={deliveryBoyInfo.avatar}
-                onChange={(e) =>
-                  SetDeliveryBoyInfo({
-                    ...deliveryBoyInfo,
-                    avatar: e.target.value,
-                  })
-                }
-              />
-              <label htmlFor="avatar">Image Name ('yasser.png')</label>
-            </span>
-          </div>
-        </form>
-      </Dialog>
-      <Dialog
+      <NewBoyDialog
+        addNewBoyDialog={addNewBoyDialog}
+        setAddNewBoyDialog={setAddNewBoyDialog}
+      />
+      {/* ########################################################## */}
+      {/* <Dialog
         header={<h3>Eddit Delivery Boy</h3>}
         footer={
           <div>
@@ -214,7 +127,8 @@ const DeliveryBoys = () => {
             </span>
           </div>
         </form>
-      </Dialog>
+      </Dialog> */}
+
       <DataTable
         value={deliveryBoysList}
         header={header}

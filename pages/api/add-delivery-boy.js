@@ -1,4 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import prisma from "@/lib/prisma";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,17 +7,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, avatar, phone } = req.body;
+    const { avatar, phone, name } = req.body;
 
-    const newBoy = await prisma.DeliveryBoy.create({
+    const newUser = await prisma.deliveryBoy.create({
       data: {
-        name,
         avatar,
         phone,
+        name,
       },
     });
-
-    res.status(201).json(newBoy);
+    console.log(newUser);
+    res.status(201).json(newUser);
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
