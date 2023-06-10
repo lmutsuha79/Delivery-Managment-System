@@ -14,7 +14,9 @@ import "primeflex/primeflex.css";
 import "primeicons/primeicons.css";
 import "../styles/layout/layout.scss";
 import "../styles/demo/Demos.scss";
-import { Toast } from "primereact/toast";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+
 
 export default function MyApp({ Component, pageProps }) {
   if (Component.getLayout) {
@@ -27,10 +29,10 @@ export default function MyApp({ Component, pageProps }) {
     return (
       <LayoutProvider>
         <Layout>
-          
-
+          <>
+            <ToastContainer />
             <Component {...pageProps} />
-          
+          </>
         </Layout>
       </LayoutProvider>
     );

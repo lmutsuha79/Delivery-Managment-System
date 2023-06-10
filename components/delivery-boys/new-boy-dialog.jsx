@@ -1,3 +1,4 @@
+import { error_toast, sucess_toast } from "@/lib/toast-notifications";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -29,15 +30,18 @@ const NewBoyDialog = ({ addNewBoyDialog, setAddNewBoyDialog }) => {
 
       const newUser = await response.json();
       console.log(newUser);
+      sucess_toast("new delivery boys sucessfully created");
       SetNewdeliveryBoyInfo({ name: "", phone: "", avatar: "" });
       setAddNewBoyDialog(false);
 
       // return newUser;
     } catch (error) {
       console.error("Error creating user:", error);
+      error_toast(error.message);
       // Handle the error as needed
     }
   }
+
   return (
     <Dialog
       header={<h3>Add new Delivery Boy</h3>}
