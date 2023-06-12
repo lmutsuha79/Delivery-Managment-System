@@ -10,13 +10,29 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-
-
 model DeliveryBoy {
-  id        Int      @id @default(autoincrement())
-  name      String
-  phone     String   @unique
-  avatar    String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int          @id @default(autoincrement())
+  name        String
+  phone       String       @unique
+  avatar      String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  attendances Attendance[]
+}
+
+model Session {
+  id            Int          @id @default(autoincrement())
+  startTime     DateTime     @default(now())
+  endTime       DateTime?
+  totalEarnings Float?       @default(0)
+  attendances   Attendance[]
+}
+
+model Attendance {
+  id            Int         @id @default(autoincrement())
+  present       Boolean
+  deliveryBoy   DeliveryBoy @relation(fields: [deliveryBoyId], references: [id])
+  deliveryBoyId Int
+  session       Session     @relation(fields: [sessionId], references: [id])
+  sessionId     Int
 }

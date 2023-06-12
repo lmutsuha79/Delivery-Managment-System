@@ -8,6 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import NewBoyDialog from "@/components/delivery-boys/new-boy-dialog";
 import EditBoyDialog from "@/components/delivery-boys/edit-boy-dialog";
+import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
 
 const DeliveryBoys = () => {
   // status of dialogs adding and edditing
@@ -15,23 +16,11 @@ const DeliveryBoys = () => {
   const [editBoyDialog, setEditBoyDialog] = useState(false);
 
   const [currentEditableBoyInfo, setCurrentEditableBoyInfo] = useState(null);
+
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
 
-  function handleEdditDeliveryBoy(id) {}
-
   useEffect(() => {
-    const fetchDeliveryBoys = async () => {
-      try {
-        const data = await fetch("/api/get-delivery-boys");
-        const fetchedDeliveryBoys = await data.json();
-        console.log(fetchedDeliveryBoys);
-        setDeliveryBoysList(fetchedDeliveryBoys);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchDeliveryBoys();
+    fetchDeliveryBoys().then((boys) => setDeliveryBoysList(boys));
   }, [addNewBoyDialog, editBoyDialog]);
 
   const header = (

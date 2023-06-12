@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const { id, name, phone, avatar } = req.body;
 
   try {
-    const updatedDeliveryBoy = await prisma.deliveryBoy.update({
+    const updatedDeliveryBoy = await prisma.DeliveryBoy.update({
       where: { id: parseInt(id) },
       data: {
         name,

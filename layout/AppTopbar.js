@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { LayoutContext } from "./context/layoutcontext";
 import { Avatar } from "primereact/avatar";
+import SessionStatus from "@/components/session-status";
 
 const AppTopbar = forwardRef((props, ref) => {
   const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } =
@@ -39,14 +40,14 @@ const AppTopbar = forwardRef((props, ref) => {
         <i className="pi pi-bars" />
       </button>
 
-      <button
+      {/* <button
         ref={topbarmenubuttonRef}
         type="button"
         className="p-link layout-topbar-menu-button layout-topbar-button"
         onClick={showProfileSidebar}
       >
         <i className="pi pi-ellipsis-v" />
-      </button>
+      </button> */}
 
       <div
         ref={topbarmenuRef}
@@ -58,14 +59,20 @@ const AppTopbar = forwardRef((props, ref) => {
           <i className="pi pi-calendar"></i>
           <span>Calendar</span>
         </button> */}
-        <button type="button" className="p-link layout-topbar-button space-x-2">
+        <div>
+          <SessionStatus />
+        </div>
+        {/* <button type="button" className="p-link layout-topbar-button space-x-2">
           <div className="flex items-center gap-2">
-            {/* <i className="pi pi-user"></i>
-            yasser */}
-            <Avatar image="/images/yasser_avatar.png" size="large" shape="circle" />
+           
+            <Avatar
+              image="/images/yasser_avatar.png"
+              size="large"
+              shape="circle"
+            />
           </div>
-            <p>Khelil yasser</p>
-        </button>
+          <p>Khelil yasser</p>
+        </button> */}
         {/* <Link href="/documentation">
           <button type="button" className="p-link layout-topbar-button">
             <i className="pi pi-cog"></i>
