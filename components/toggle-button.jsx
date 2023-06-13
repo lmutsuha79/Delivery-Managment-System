@@ -1,10 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const ToggleButton = () => {
+const ToggleButton = ({
+  currentSession,
+  boyId,
+  handleSetAbsent,
+  handleSetPresent,
+}) => {
   const [isOn, setIsOn] = useState(false);
+  useEffect(() => {
+    async function getAttandanceStatus() {
+      try {
+        const response = await fetch(`/api/attendance/get-status`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId: currentSession.sessionId,
+            deliveryBoyId: boyId,
+          }),
+        });
+        const data = await response.json();
+
+        // Update the attendance status state
+        setIsOn(data.status);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    getAttandanceStatus();
+  });
 
   const handleToggle = () => {
     setIsOn((prevState) => !prevState);
+    !isOn ? handleSetPresent(boyId) : handleSetAbsent(boyId);
   };
 
   return (

@@ -11,9 +11,9 @@ import { Dialog } from "primereact/dialog";
 import { useContext, useState } from "react";
 
 const SessionStatus = () => {
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [confirmationDialogStatus, setConfirmationDialogStatus] =
     useState(false);
-  const { currentSession, setCurrentSession } = useContext(SessionContext);
   async function handleStartSession() {
     try {
       const response = await fetch("/api/create-session", { method: "POST" });
