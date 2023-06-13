@@ -30,7 +30,7 @@ const ToggleButton = ({
     }
 
     getAttandanceStatus();
-  });
+  }, []);
 
   const handleToggle = () => {
     setIsOn((prevState) => !prevState);
