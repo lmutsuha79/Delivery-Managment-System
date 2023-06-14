@@ -18,6 +18,7 @@ model DeliveryBoy {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   attendances Attendance[]
+  orders      Order[]
 }
 
 model Session {
@@ -26,6 +27,7 @@ model Session {
   endTime       DateTime?
   totalEarnings Float?       @default(0)
   attendances   Attendance[]
+  orders        Order[]
 }
 
 model Attendance {
@@ -38,4 +40,22 @@ model Attendance {
   status        Boolean     @default(false)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+model Order {
+  id               Int         @id @default(autoincrement())
+  phoneNumber      String
+  customerName     String?
+  moreInfo         String?
+  pickUpLocation   String
+  deliveryLocation String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  deliveredAt      DateTime
+  money            Float
+  status           String      @default("Pending Pickup")
+  deliveryBoy      DeliveryBoy @relation(fields: [deliveryBoyId], references: [id])
+  deliveryBoyId    Int
+  session          Session     @relation(fields: [sessionId], references: [id])
+  sessionId        Int
 }
