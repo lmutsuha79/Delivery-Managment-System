@@ -1,18 +1,39 @@
 import AddOrderDialog from "@/components/orders/add-order-dialog";
 import OrdersTable from "@/components/orders/orders-table";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SessionContext } from "../_app";
 
 const Orders = () => {
-  // the admin recive the order and mark the info
-  // the admin asign the orders to one of the availble delivery boys
-  // the delivery boy reaches to pickup location
-  // deliveryboy confirms and pick the order
-  // deliveryboy reach the destination and delivery courier and pay
-
-  // in this difrence layer the admin can mark the order with flag depending on the
-  // status of the order done!,picked...
   const [addOrderDialogVisibility, setAddOrderDialogVisibility] =
     useState(false);
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    async function fetch_and_set_orders() {
+      try {
+        const response = await fetch("/api/orders/get-current-orders", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ sessionId: currentSession.sessionId }),
+        });
+        if (response.ok) {
+          const { orders } = await response.json();
+          setOrders(orders);
+          // return data.orders;
+        } else {
+          throw new Error("Failed to fetch orders");
+        }
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to fetch orders");
+      }
+    }
+    if (currentSession.sessionId) {
+      fetch_and_set_orders();
+    }
+  }, [currentSession]);
+
   function showUpAddOrderDialog() {
     setAddOrderDialogVisibility(true);
   }
@@ -22,7 +43,11 @@ const Orders = () => {
         addOrderDialogVisibility={addOrderDialogVisibility}
         setAddOrderDialogVisibility={setAddOrderDialogVisibility}
       />
-      <OrdersTable showUpAddOrderDialog={showUpAddOrderDialog} />
+      <OrdersTable
+        tableTitle={"The Orders For The Curret Session"}
+        showUpAddOrderDialog={showUpAddOrderDialog}
+        orders={orders}
+      />
     </div>
   );
 };

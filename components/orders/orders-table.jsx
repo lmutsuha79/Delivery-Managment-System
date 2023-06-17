@@ -1,35 +1,15 @@
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Avatar } from "primereact/avatar";
+import { SessionContext } from "@/pages/_app";
+import OrderStatusTag from "./order-status-tag";
 
-const OrdersTable = ({ showUpAddOrderDialog }) => {
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    async function fetch_and_set_orders() {
-      try {
-        const response = await fetch("/api/orders/get-current-orders");
-        if (response.ok) {
-          const { orders } = await response.json();
-          console.log(orders);
-          setOrders(orders);
-          // return data.orders;
-        } else {
-          throw new Error("Failed to fetch orders");
-        }
-      } catch (error) {
-        console.error(error);
-        throw new Error("Failed to fetch orders");
-      }
-    }
-    fetch_and_set_orders();
-  }, []);
-
+const OrdersTable = ({ showUpAddOrderDialog, tableTitle, orders }) => {
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-      <span className="text-xl text-900 font-bold">All Orders</span>
+      <span className="text-xl text-900 font-bold">{tableTitle}</span>
       <Button icon="pi pi-plus" rounded raised onClick={showUpAddOrderDialog}>
         <span className="pl-2 text-lg"> create new order</span>
       </Button>
@@ -57,7 +37,10 @@ const OrdersTable = ({ showUpAddOrderDialog }) => {
       showGridlines
     >
       <Column field="id" header="Id"></Column>
-      <Column field="status" header="Status"></Column>
+      <Column
+        body={(order) => <OrderStatusTag orderText={order.status} />}
+        header="Status"
+      ></Column>
       <Column
         body={(order) => (
           <div className="flex flex-col items-center gap-2">
