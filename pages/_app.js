@@ -16,6 +16,7 @@ import "../styles/layout/layout.scss";
 import "../styles/demo/Demos.scss";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
 
 export const SessionContext = createContext();
 export default function MyApp({ Component, pageProps }) {
@@ -48,6 +49,7 @@ export default function MyApp({ Component, pageProps }) {
         // Handle the error or display an error message
       }
     }
+   
     getCurrentSession();
   }, []);
 

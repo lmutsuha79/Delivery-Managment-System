@@ -1,16 +1,37 @@
-import { error_toast } from "@/lib/toast-notifications";
+import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
+import { error_toast, sucess_toast } from "@/lib/toast-notifications";
+import { SessionContext } from "@/pages/_app";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/InputTextarea";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const AddOrderDialog = ({
   addOrderDialogVisibility,
   setAddOrderDialogVisibility,
 }) => {
-  function submitAddNewOrder() {
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
+  const [formData, setFormData] = useState({
+    phoneNumber: "",
+    customerName: "",
+    moreInfo: "",
+    pickUpLocation: "",
+    deliveryLocation: "",
+    money: 0,
+    deliveryBoy: null,
+  });
+  const [deliveryBoysList, setDeliveryBoysList] = useState([]);
+  useEffect(() => {
+    async function setBoys() {
+      const boys = await fetchDeliveryBoys();
+      setDeliveryBoysList(boys);
+    }
+    setBoys();
+  }, []);
+
+  async function submitAddNewOrder() {
     const form = document.getElementById("add_new_order_form");
     //     check the validity of the form
     if (!form.checkValidity()) {
@@ -20,34 +41,33 @@ const AddOrderDialog = ({
           error_toast(`${element.name} is not valid`, "top-right")
         );
     }
+    try {
+      const response = await fetch("/api/orders/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          sessionId: currentSession.sessionId,
+          deliveryBoyId: formData.deliveryBoy.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        sucess_toast("the order was created successfully id=" + data.order.id);
+        return data.order;
+      } else {
+        error_toast("Failed to create order");
+        throw new Error("Failed to create order");
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to create order");
+    }
   }
 
-  const footerContent = (
-    <div>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        onClick={() => setAddOrderDialogVisibility(false)}
-        className="p-button-text"
-      />
-      <Button
-        label="Confirm"
-        icon="pi pi-check"
-        onClick={() => submitAddNewOrder()}
-        autoFocus
-      />
-    </div>
-  );
-
-  const [formData, setFormData] = useState({
-    phoneNumber: "",
-    customerName: "",
-    moreInfo: "",
-    pickUpLocation: "",
-    deliveryLocation: "",
-    money: 0,
-    deliveryBoy: "",
-  });
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -60,18 +80,6 @@ const AddOrderDialog = ({
     // TODO: Perform submit logic, e.g., send the data to the server
     console.log(formData);
   };
-  const deliveryBoys = [
-    { name: "Zino Bouabdalah", image: "zino.jpg" },
-    { name: "yasser Doe", image: "yasser.png" },
-    { name: "sarim Smith", image: "sarim.jpg" },
-    // Add more delivery boy objects as needed
-  ];
-  const handleDeliveryBoyChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      deliveryBoy: e.target.value,
-    }));
-  };
 
   return (
     <Dialog
@@ -79,7 +87,22 @@ const AddOrderDialog = ({
       style={{ width: "50vw" }}
       onHide={() => setAddOrderDialogVisibility(false)}
       header={<div>Add New Customer Order</div>}
-      footer={footerContent}
+      footer={
+        <div>
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            onClick={() => setAddOrderDialogVisibility(false)}
+            className="p-button-text"
+          />
+          <Button
+            label="Confirm"
+            icon="pi pi-check"
+            onClick={() => submitAddNewOrder()}
+            autoFocus
+          />
+        </div>
+      }
     >
       <div className="p-fluid">
         <form id="add_new_order_form" onSubmit={handleSubmit}>
@@ -163,29 +186,15 @@ const AddOrderDialog = ({
               Delivery Boy:
             </label>
             <Dropdown
-              id="deliveryBoy"
-              name="deliveryBoy"
               value={formData.deliveryBoy}
-              options={deliveryBoys}
-              onChange={handleDeliveryBoyChange}
+              onChange={(e) =>
+                setFormData({ ...formData, deliveryBoy: e.value })
+              }
+              options={deliveryBoysList}
               optionLabel="name"
-              filter
-              showClear
               placeholder="Select a delivery boy"
-              className="p-dropdown"
-              required
-            >
-              <template slot="item" slot-scope="option">
-                <div className="p-d-flex p-ai-center">
-                  {/* <img
-                    src={`/images/delivery-boys-avatars/${deliveryBoys.image}`}
-                    alt={deliveryBoys.name}
-                    className="delivery-boy-image"
-                  /> */}
-                  <span className="p-ml-2">{deliveryBoys.name}</span>
-                </div>
-              </template>
-            </Dropdown>
+              className="w-full md:w-14rem"
+            />
           </div>
         </form>
       </div>
