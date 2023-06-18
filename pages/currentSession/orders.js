@@ -8,9 +8,13 @@ const Orders = () => {
     useState(false);
   const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [orders, setOrders] = useState([]);
+  const [ordersToken, setOrdersToken] = useState(0);
+  function changeOrdersToken() {
+    setOrdersToken((prev) => prev + 1);
+  }
 
   useEffect(() => {
-    async function fetch_and_set_orders() {
+    async function fetch_and_set_current_orders() {
       try {
         const response = await fetch("/api/orders/get-current-orders", {
           method: "POST",
@@ -30,9 +34,9 @@ const Orders = () => {
       }
     }
     if (currentSession.sessionId) {
-      fetch_and_set_orders();
+      fetch_and_set_current_orders();
     }
-  }, [currentSession]);
+  }, [currentSession, ordersToken]);
 
   function showUpAddOrderDialog() {
     setAddOrderDialogVisibility(true);
@@ -43,7 +47,9 @@ const Orders = () => {
         addOrderDialogVisibility={addOrderDialogVisibility}
         setAddOrderDialogVisibility={setAddOrderDialogVisibility}
       />
+
       <OrdersTable
+        changeOrdersToken={changeOrdersToken}
         tableTitle={"The Orders For The Curret Session"}
         showUpAddOrderDialog={showUpAddOrderDialog}
         orders={orders}
