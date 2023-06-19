@@ -6,9 +6,20 @@ import { Avatar } from "primereact/avatar";
 import { SessionContext } from "@/pages/_app";
 import OrderStatusTag from "./order-status-tag";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faEye,
+  faRefresh,
+  faSearch,
+  faShower,
+} from "@fortawesome/free-solid-svg-icons";
 import EdditOrderDialog from "./eddit-order-dialog";
 import ChangeOrderStatus from "./change-order-status";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { Tag } from "primereact/tag";
+import OrderInfoDialog from "./order-info-dialog";
 
 const OrdersTable = ({
   showUpAddOrderDialog,
@@ -16,8 +27,14 @@ const OrdersTable = ({
   orders,
   changeOrdersToken,
 }) => {
-  // const [changeStatusDialogVisibility, setChangeStatusDialogVisibility] =
-  //   useState(false);
+  const [showOrderInfoDialogVisibility, setShowOrderInfoDialogVisibility] =
+    useState(false);
+  const [currentShowOrderData, setCurrentShowOrderData] = useState(null);
+
+  function handleShowOrderInfo(order) {
+    setCurrentShowOrderData(order);
+    setShowOrderInfoDialogVisibility(true);
+  }
   const [edditOrderDialogStatus, setEdditOrderDialogStatus] = useState(false);
   const [currentEditbleOrderData, setCurrentEditbleOrderData] = useState(null);
   function handleEditOrder(order) {
@@ -25,9 +42,20 @@ const OrdersTable = ({
     setEdditOrderDialogStatus(true);
   }
 
-  // useEffect(() => {
-  //   console.log("order changed");
-  // }, [currentEditbleOrderData]);
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
+
+  const onGlobalFilterChange = (e) => {
+    console.log("hello");
+    const value = e.target.value;
+    let _filters = { ...filters };
+    _filters["global"].value = value;
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
 
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -35,6 +63,17 @@ const OrdersTable = ({
       <Button icon="pi pi-plus" rounded raised onClick={showUpAddOrderDialog}>
         <span className="pl-2 text-lg"> create new order</span>
       </Button>
+      <div className="flex justify-end items-center">
+        <span className="p-input-icon-left">
+          <FontAwesomeIcon icon={faSearch} />
+          <InputText
+            className="border-main_dark ring-black focus:ring-black"
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Search any thing here ..."
+          />
+        </span>
+      </div>
     </div>
   );
   const footer = `In total there are ${orders ? orders.length : 0} orders.`;
@@ -48,6 +87,13 @@ const OrdersTable = ({
           setEdditOrderDialogStatus={setEdditOrderDialogStatus}
           edditOrderDialogStatus={edditOrderDialogStatus}
           currentEditbleOrderData={currentEditbleOrderData}
+        />
+      )}
+      {showOrderInfoDialogVisibility && (
+        <OrderInfoDialog
+          showOrderInfoDialogVisibility={showOrderInfoDialogVisibility}
+          setShowOrderInfoDialogVisibility={setShowOrderInfoDialogVisibility}
+          currentShowOrderData={currentShowOrderData}
         />
       )}
       {/* <ChangeOrderStatus
@@ -70,24 +116,49 @@ const OrdersTable = ({
         columnResizeMode="expand"
         resizableColumns
         showGridlines
+        filters={filters}
+        filterDisplay="row"
+        globalFilterFields={[
+          "phoneNumber",
+          "customerName",
+          "status",
+          "id",
+          "moreInfo",
+          "deliveryLocation",
+          "pickUpLocation",
+          "amount",
+        ]}
+        emptyMessage="no results found"
       >
         <Column
+          header="Actions"
           body={(order) => (
-            <button onClick={() => handleEditOrder(order)} className="">
-              <FontAwesomeIcon
-                className="text-gray-700 hover:scale-110 transition-transform transform"
-                icon={faEdit}
-              />
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => handleEditOrder(order)} className="">
+                <FontAwesomeIcon
+                  className="text-gray-700 hover:scale-110 transition-transform transform"
+                  icon={faEdit}
+                />
+              </button>
+              <button onClick={() => handleShowOrderInfo(order)}>
+                <FontAwesomeIcon
+                  icon={faEye}
+                  className="text-gray-700 hover:scale-110 transition-transform transform"
+                />
+              </button>
+            </div>
           )}
-          header="Eddit"
         ></Column>
-        <Column field="id" header="Id"></Column>
+        <Column field="id" header="Id" sortable></Column>
         <Column
+          sortable
+          field="status"
           body={(order) => <OrderStatusTag orderText={order.status} />}
           header="Status"
+          style={{ minWidth: "12rem" }}
         ></Column>
         <Column
+          sortable
           body={(order) => (
             <div className="flex flex-col items-center gap-2">
               <Avatar
@@ -101,11 +172,14 @@ const OrdersTable = ({
           header="Deliver Boy"
         ></Column>
         <Column field="phoneNumber" header="Phone"></Column>
-        <Column field="customerName" header="Customer Name"></Column>
+        <Column sortable field="customerName" header="Customer Name"></Column>
         <Column field="pickUpLocation" header="Pick Up Location"></Column>
         <Column field="deliveryLocation" header="Quantity"></Column>
+        <Column sortable field="money" header="Amount"></Column>
+
         <Column field="moreInfo" header="More Info"></Column>
         <Column
+          sortable
           body={(order) => {
             return new Date(order.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
@@ -118,6 +192,7 @@ const OrdersTable = ({
           header="Creation Date"
         ></Column>
         <Column
+          sortable
           body={(order) => {
             return new Date(order.deliveredAt).toLocaleDateString("en-US", {
               year: "numeric",
@@ -129,7 +204,6 @@ const OrdersTable = ({
           }}
           header="Delivred At"
         ></Column>
-        <Column field="money" header="Amount"></Column>
       </DataTable>
     </>
   );

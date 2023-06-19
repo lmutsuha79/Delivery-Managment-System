@@ -41,12 +41,16 @@ const Orders = () => {
   function showUpAddOrderDialog() {
     setAddOrderDialogVisibility(true);
   }
+
   return (
     <div>
-      <AddOrderDialog
-        addOrderDialogVisibility={addOrderDialogVisibility}
-        setAddOrderDialogVisibility={setAddOrderDialogVisibility}
-      />
+      {addOrderDialogVisibility && (
+        <AddOrderDialog
+          addOrderDialogVisibility={addOrderDialogVisibility}
+          setAddOrderDialogVisibility={setAddOrderDialogVisibility}
+          changeOrdersToken={changeOrdersToken}
+        />
+      )}
 
       <OrdersTable
         changeOrdersToken={changeOrdersToken}

@@ -11,6 +11,7 @@ import { useContext, useEffect, useState } from "react";
 const AddOrderDialog = ({
   addOrderDialogVisibility,
   setAddOrderDialogVisibility,
+  changeOrdersToken,
 }) => {
   const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [formData, setFormData] = useState({
@@ -24,11 +25,29 @@ const AddOrderDialog = ({
   });
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
   useEffect(() => {
-    async function setBoys() {
-      const boys = await fetchDeliveryBoys();
-      setDeliveryBoysList(boys);
+    async function get_and_set_active_boys() {
+      try {
+        const response = await fetch("/api/attendance//get-active-boys", {
+          method: "POST",
+          body: JSON.stringify({ sessionId: 26 }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch active boys");
+        }
+
+        const {activeBoys} = await response.json();
+        console.log(activeBoys);
+        setDeliveryBoysList(activeBoys);
+
+      } catch (error) {
+        console.log(error);
+      }
+      // const boys = await fetchDeliveryBoys();
     }
-    setBoys();
+    get_and_set_active_boys();
   }, []);
 
   async function submitAddNewOrder() {
@@ -57,6 +76,9 @@ const AddOrderDialog = ({
       if (response.ok) {
         const data = await response.json();
         sucess_toast("the order was created successfully id=" + data.order.id);
+        changeOrdersToken();
+        setAddOrderDialogVisibility(false);
+
         return data.order;
       } else {
         error_toast("Failed to create order");
