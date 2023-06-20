@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         moreInfo,
         pickUpLocation,
         deliveryLocation,
-        money: parseFloat(money),
+        money: parseFloat(money) ? parseFloat(money) : 200,
         deliveryBoy: {
           connect: { id: deliveryBoyId },
         },

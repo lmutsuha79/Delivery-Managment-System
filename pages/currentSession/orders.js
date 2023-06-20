@@ -13,6 +13,31 @@ const Orders = () => {
     setOrdersToken((prev) => prev + 1);
   }
 
+  function sortOrders(orders) {
+    const sortedArray = [...orders];
+    const statusOrder = [
+      "pending",
+      "on_the_road",
+      "picked_up",
+      "delivered",
+      "cancelled",
+    ];
+    sortedArray.sort((a, b) => {
+      const statusA = a.status.toLowerCase();
+      const statusB = b.status.toLowerCase();
+      const indexA = statusOrder.indexOf(statusA);
+      const indexB = statusOrder.indexOf(statusB);
+
+      if (indexA < indexB) {
+        return -1;
+      } else if (indexA > indexB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    return sortedArray;
+  }
   useEffect(() => {
     async function fetch_and_set_current_orders() {
       try {
@@ -23,8 +48,9 @@ const Orders = () => {
         });
         if (response.ok) {
           const { orders } = await response.json();
-          setOrders(orders);
-          // return data.orders;
+          const sorted_orders = sortOrders(orders);
+          console.log(sorted_orders)
+          setOrders(sorted_orders);
         } else {
           throw new Error("Failed to fetch orders");
         }

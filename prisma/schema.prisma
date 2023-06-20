@@ -51,7 +51,7 @@ model Order {
   deliveryLocation String
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
-  deliveredAt      DateTime?
+  deliveredAt      DateTime?   
   money            Float
   status           String?     @default("pending")
   deliveryBoy      DeliveryBoy @relation(fields: [deliveryBoyId], references: [id])

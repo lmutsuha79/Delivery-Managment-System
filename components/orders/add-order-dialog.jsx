@@ -14,22 +14,23 @@ const AddOrderDialog = ({
   changeOrdersToken,
 }) => {
   const { currentSession, setCurrentSession } = useContext(SessionContext);
+  console.log(currentSession.sessionId);
   const [formData, setFormData] = useState({
     phoneNumber: "",
     customerName: "",
     moreInfo: "",
     pickUpLocation: "",
     deliveryLocation: "",
-    money: 0,
+    money: 200,
     deliveryBoy: null,
   });
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
   useEffect(() => {
     async function get_and_set_active_boys() {
       try {
-        const response = await fetch("/api/attendance//get-active-boys", {
+        const response = await fetch("/api/attendance/get-active-boys", {
           method: "POST",
-          body: JSON.stringify({ sessionId: 26 }),
+          body: JSON.stringify({ sessionId: currentSession.sessionId }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -38,17 +39,15 @@ const AddOrderDialog = ({
           throw new Error("Failed to fetch active boys");
         }
 
-        const {activeBoys} = await response.json();
-        console.log(activeBoys);
+        const { activeBoys } = await response.json();
         setDeliveryBoysList(activeBoys);
-
       } catch (error) {
         console.log(error);
       }
       // const boys = await fetchDeliveryBoys();
     }
     get_and_set_active_boys();
-  }, []);
+  }, [currentSession]);
 
   async function submitAddNewOrder() {
     const form = document.getElementById("add_new_order_form");

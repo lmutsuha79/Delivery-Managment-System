@@ -121,12 +121,13 @@ const OrdersTable = ({
         globalFilterFields={[
           "phoneNumber",
           "customerName",
+          "deliveryBoy.name",
           "status",
           "id",
           "moreInfo",
           "deliveryLocation",
           "pickUpLocation",
-          "amount",
+          "money",
         ]}
         emptyMessage="no results found"
       >
@@ -159,6 +160,7 @@ const OrdersTable = ({
         ></Column>
         <Column
           sortable
+          field="deliveryBoy"
           body={(order) => (
             <div className="flex flex-col items-center gap-2">
               <Avatar
@@ -175,7 +177,7 @@ const OrdersTable = ({
         <Column sortable field="customerName" header="Customer Name"></Column>
         <Column field="pickUpLocation" header="Pick Up Location"></Column>
         <Column field="deliveryLocation" header="Quantity"></Column>
-        <Column sortable field="money" header="Amount"></Column>
+        <Column sortable field="money" header="Money"></Column>
 
         <Column field="moreInfo" header="More Info"></Column>
         <Column

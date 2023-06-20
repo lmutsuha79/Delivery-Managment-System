@@ -12,17 +12,18 @@ export default async function handler(req, res) {
     const attendance = await prisma.attendance.findMany({
       where: {
         sessionId: sessionId,
+        status: true,
       },
       include: {
-            deliveryBoy: true,
-          },
+        deliveryBoy: true,
+      },
     });
 
     if (!attendance) {
       // If no attendance record is found, the delivery boy is considered absent
       return res.status(200).json({ activeBoys: [] });
     }
-    const activeBoys = attendance.map(item => item.deliveryBoy)
+    const activeBoys = attendance.map((item) => item.deliveryBoy);
 
     return res.status(200).json({ activeBoys: activeBoys });
   } catch (error) {
