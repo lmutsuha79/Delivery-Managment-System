@@ -1,3 +1,14 @@
+// khlas page:
+// create a page for khlase
+// create a column in the table of delivery boy and name it (unpaid amount)
+// every time the delivery boy delivers an order the money added to the upaid amount
+// when the admin needs to give the delivery boys thier money he entre this page
+// and he will see a table of delivery boys and thier unpaid balance
+// so he can now paid theme and click on pay
+// in this moment the unpaid amount will return to 0
+// and a new row will be created in the table called (payments)
+// this table will contains every payment (id,crated_at,delivery_boy_id,paid_amount)
+
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useContext, useEffect, useState } from "react";
@@ -22,10 +33,21 @@ const MoneyForCurentSession = () => {
       get_set_DeliveryBoysEarningInfo();
     }
   }, [currentSession]);
-
+  const tableHeader = (
+    <div className="">
+      <h4>Total Earning Of Delivery Boys In This Session</h4>
+      <span className="text-primary_color">
+        Note That Only Delivery Boys Presented In this Session Will Appear Here{" "}
+      </span>
+    </div>
+  );
   return (
     <div>
-      <DataTable value={earningsInfo} tableStyle={{ minWidth: "50rem" }}>
+      <DataTable
+        header={tableHeader}
+        value={earningsInfo}
+        tableStyle={{ minWidth: "50rem" }}
+      >
         <Column field="deliveryBoy.id" header="Id"></Column>
         <Column field="deliveryBoy.name" header="Name"></Column>
         <Column
@@ -57,7 +79,9 @@ const MoneyForCurentSession = () => {
           field="Profite"
           body={(item) => (
             <span className="block ml-2">
-              {item.completedOrders * 60 + " " + "DA"}
+              {item.completedOrders * item.deliveryBoy.profiteForEveryDelivery +
+                " " +
+                "DA"}
             </span>
           )}
           header="Profite"

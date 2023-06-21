@@ -20,14 +20,24 @@ const AppMenu = () => {
       label: "Delivery Boys Managment",
       items: [
         {
-          label: "delivery boys",
+          label: "Delivery Boys",
           icon: "pi pi-fw pi-list",
           to: "/delivery-boys",
         },
+      ],
+    },
+    {
+      label: "Money Managment",
+      items: [
         {
-          label: "Input",
-          icon: "pi pi-fw pi-check-square",
-          to: "/uikit/input",
+          label: "Payments",
+          icon: "pi pi-fw pi-wallet",
+          to: "/Payments",
+        },
+        {
+          label: "Workers Payments",
+          icon: "pi pi-fw pi-users",
+          to: "/workers payments",
         },
       ],
     },
@@ -51,20 +61,39 @@ const AppMenu = () => {
             <li className="menu-separator"></li>
             {!currentSession.status ? (
               <div key={"jijijiji"}>
-                <h3 className="text-base font-semibold">Current Session Managment</h3>
-                <p className="text-red-500">no active session try to start one</p>
+                <h3 className="text-base font-semibold">
+                  Current Session Managment
+                </h3>
+                <p className="text-red-500">
+                  no active session try to start one
+                </p>
               </div>
             ) : (
               <AppMenuitem
                 item={{
                   label: "Current session Managment",
                   items: [
-                    { label: "overview", to: "/currentSession" },
+                    {
+                      label: "Overview",
+                      to: "/currentSession",
+                      icon: "pi pi-fw pi-microsoft",
+                    },
                     {
                       label: "Delivery Boys Attendance",
                       to: "/currentSession/boysAttendance",
+                      icon: "pi pi-fw pi-check-square",
                     },
-                    { label: "orders", to: "/currentSession/orders" },
+                    {
+                      label: "Orders",
+                      to: "/currentSession/orders",
+                      icon: "pi pi-fw pi-cart-plus",
+                    },
+
+                    {
+                      label: "Delivery Boys Earnings",
+                      to: "/currentSession/money-for-current-session",
+                      icon: "pi pi-fw pi-money-bill",
+                    },
                   ],
                 }}
                 root={true}

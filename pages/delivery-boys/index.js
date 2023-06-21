@@ -11,10 +11,7 @@ import EditBoyDialog from "@/components/delivery-boys/edit-boy-dialog";
 import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
 
 const DeliveryBoys = () => {
-  const [boysListToken, setBoysListToken] = useState(0);
-  function changeOrdersToken() {
-    setBoysListToken((prev) => prev + 1);
-  }
+ 
   // status of dialogs adding and edditing
   const [addNewBoyDialog, setAddNewBoyDialog] = useState(false);
   const [editBoyDialog, setEditBoyDialog] = useState(false);
@@ -25,7 +22,7 @@ const DeliveryBoys = () => {
 
   useEffect(() => {
     fetchDeliveryBoys().then((boys) => setDeliveryBoysList(boys));
-  }, [addNewBoyDialog, editBoyDialog, boysListToken]);
+  }, [addNewBoyDialog, editBoyDialog]);
 
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
