@@ -4,9 +4,10 @@ import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../_app";
 
 const Orders = () => {
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
+
   const [addOrderDialogVisibility, setAddOrderDialogVisibility] =
     useState(false);
-  const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [orders, setOrders] = useState([]);
   const [ordersToken, setOrdersToken] = useState(0);
   function changeOrdersToken() {

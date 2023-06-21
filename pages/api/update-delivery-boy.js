@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const { id, name, phone, avatar } = req.body;
+  const { id, name, phone, avatar, profiteForEveryDelivery } = req.body;
 
   try {
     const updatedDeliveryBoy = await prisma.DeliveryBoy.update({
@@ -14,6 +14,7 @@ export default async function handler(req, res) {
         name,
         phone,
         avatar,
+        profiteForEveryDelivery: parseInt(profiteForEveryDelivery),
       },
     });
 

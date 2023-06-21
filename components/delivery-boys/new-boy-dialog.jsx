@@ -9,6 +9,7 @@ const NewBoyDialog = ({ addNewBoyDialog, setAddNewBoyDialog }) => {
     name: "",
     phone: "",
     avatar: "",
+    profiteForEveryDelivery: "60",
   });
   async function handleAddingNewDeliveryBoy() {
     try {
@@ -21,6 +22,7 @@ const NewBoyDialog = ({ addNewBoyDialog, setAddNewBoyDialog }) => {
           name: newDeliveryBoyInfo.name,
           phone: newDeliveryBoyInfo.phone,
           avatar: newDeliveryBoyInfo.avatar,
+          profiteForEveryDelivery: newDeliveryBoyInfo.profiteForEveryDelivery,
         }),
       });
 
@@ -31,7 +33,12 @@ const NewBoyDialog = ({ addNewBoyDialog, setAddNewBoyDialog }) => {
       const newUser = await response.json();
       console.log(newUser);
       sucess_toast("new delivery boys sucessfully created");
-      SetNewdeliveryBoyInfo({ name: "", phone: "", avatar: "" });
+      SetNewdeliveryBoyInfo({
+        name: "",
+        phone: "",
+        avatar: "",
+        profiteForEveryDelivery: "60",
+      });
       setAddNewBoyDialog(false);
 
       // return newUser;
@@ -104,6 +111,24 @@ const NewBoyDialog = ({ addNewBoyDialog, setAddNewBoyDialog }) => {
               }
             />
             <label htmlFor="avatar">Image Name ('yasser.png')</label>
+          </span>
+        </div>
+        <div>
+          <span className="p-float-label">
+            <InputText
+            type="number"
+              id="profiteForEveryDelivery"
+              value={newDeliveryBoyInfo.profiteForEveryDelivery}
+              onChange={(e) =>
+                SetNewdeliveryBoyInfo({
+                  ...newDeliveryBoyInfo,
+                  profiteForEveryDelivery: e.target.value,
+                })
+              }
+            />
+            <label htmlFor="profiteForEveryDelivery">
+              Profite For Every Delivery (DA)
+            </label>
           </span>
         </div>
       </form>

@@ -55,6 +55,7 @@ const EditBoyDialog = ({
           name: deliveryBoyInfo.name,
           phone: deliveryBoyInfo.phone,
           avatar: deliveryBoyInfo.avatar,
+          profiteForEveryDelivery: deliveryBoyInfo.profiteForEveryDelivery,
         }),
       });
 
@@ -64,6 +65,7 @@ const EditBoyDialog = ({
         // Perform any additional actions after deletion
       } else {
         console.error("Error updating delivery boy:", response.statusText);
+        throw new Error("Error updating delivery boy");
         // Handle error case
       }
     } catch (error) {
@@ -145,6 +147,24 @@ const EditBoyDialog = ({
               }
             />
             <label htmlFor="avatar">Image Name ('yasser.png')</label>
+          </span>
+        </div>
+        <div>
+          <span className="p-float-label">
+            <InputText
+              type="number"
+              id="profiteForEveryDelivery"
+              value={deliveryBoyInfo?.profiteForEveryDelivery}
+              onChange={(e) =>
+                setDeliveryBoyInfo({
+                  ...deliveryBoyInfo,
+                  profiteForEveryDelivery: e.target.value,
+                })
+              }
+            />
+            <label htmlFor="profiteForEveryDelivery">
+              Profite For Every Delivery (Da)
+            </label>
           </span>
         </div>
       </form>

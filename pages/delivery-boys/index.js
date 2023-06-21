@@ -11,6 +11,10 @@ import EditBoyDialog from "@/components/delivery-boys/edit-boy-dialog";
 import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
 
 const DeliveryBoys = () => {
+  const [boysListToken, setBoysListToken] = useState(0);
+  function changeOrdersToken() {
+    setBoysListToken((prev) => prev + 1);
+  }
   // status of dialogs adding and edditing
   const [addNewBoyDialog, setAddNewBoyDialog] = useState(false);
   const [editBoyDialog, setEditBoyDialog] = useState(false);
@@ -21,7 +25,7 @@ const DeliveryBoys = () => {
 
   useEffect(() => {
     fetchDeliveryBoys().then((boys) => setDeliveryBoysList(boys));
-  }, [addNewBoyDialog, editBoyDialog]);
+  }, [addNewBoyDialog, editBoyDialog, boysListToken]);
 
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -42,17 +46,21 @@ const DeliveryBoys = () => {
   } delivery boys.`;
   return (
     <div>
-      <NewBoyDialog
-        addNewBoyDialog={addNewBoyDialog}
-        setAddNewBoyDialog={setAddNewBoyDialog}
-      />
+      {addNewBoyDialog && (
+        <NewBoyDialog
+          addNewBoyDialog={addNewBoyDialog}
+          setAddNewBoyDialog={setAddNewBoyDialog}
+        />
+      )}
       {/* ########################################################## */}
-      <EditBoyDialog
-        editBoyDialog={editBoyDialog}
-        setEditBoyDialog={setEditBoyDialog}
-        currentEditableBoyInfo={currentEditableBoyInfo}
-        setCurrentEditableBoyInfo={setCurrentEditableBoyInfo}
-      />
+      {editBoyDialog && (
+        <EditBoyDialog
+          editBoyDialog={editBoyDialog}
+          setEditBoyDialog={setEditBoyDialog}
+          currentEditableBoyInfo={currentEditableBoyInfo}
+          setCurrentEditableBoyInfo={setCurrentEditableBoyInfo}
+        />
+      )}
 
       <DataTable
         value={deliveryBoysList}
@@ -72,7 +80,8 @@ const DeliveryBoys = () => {
             />
           )}
         ></Column>
-        <Column field="phone" header="Pone"></Column>
+        <Column field="phone" header="Phone Number"></Column>
+        <Column field="profiteForEveryDelivery" body={boy => <span>{`${boy.profiteForEveryDelivery} DA`}</span>} header="Profite / Delivery"></Column>
         <Column
           field="eddit"
           header="Eddit"

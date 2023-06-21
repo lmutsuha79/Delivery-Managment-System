@@ -7,13 +7,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { avatar, phone, name } = req.body;
+    const { avatar, phone, name, profiteForEveryDelivery } = req.body;
 
     const newUser = await prisma.deliveryBoy.create({
       data: {
         avatar,
         phone,
         name,
+        profiteForEveryDelivery: parseInt(profiteForEveryDelivery),
       },
     });
     console.log(newUser);

@@ -9,10 +9,58 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar } from "primereact/avatar";
 import { OrderList } from "primereact/orderlist";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SessionContext } from "../_app";
 
-const currentSession = ({data}) => {
-      console.log(data)
+const currentSession = () => {
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
+
+  const [moneyInfo, setMoneyInfo] = useState();
+  console.log(currentSession.sessionId);
+  const [deliveryBoysList, setDeliveryBoysList] = useState([]);
+  useEffect(() => {
+    async function get_and_set_active_boys() {
+      try {
+        const response = await fetch("/api/attendance/get-active-boys", {
+          method: "POST",
+          body: JSON.stringify({ sessionId: currentSession.sessionId }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch active boys");
+        }
+
+        const { activeBoys } = await response.json();
+        setDeliveryBoysList(activeBoys);
+      } catch (error) {
+        console.log(error);
+      }
+      // const boys = await fetchDeliveryBoys();
+    }
+    async function get_money_info() {
+      try {
+        const response = await fetch("/api/money/get-current-money-info", {
+          method: "POST",
+          body: JSON.stringify({ sessionId: currentSession.sessionId }),
+          headers: { "Content-Type": "application/json" },
+        });
+        const { report } = await response.json();
+        console.log(report);
+
+        setMoneyInfo(report);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    if (currentSession.sessionId) {
+      get_money_info();
+      get_and_set_active_boys();
+    }
+  }, [currentSession]);
+
   return (
     <div className="grid">
       <div className="col-12 lg:col-6 xl:col-3">
@@ -23,7 +71,7 @@ const currentSession = ({data}) => {
                 Total revenue for this session
               </span>
               <div className="text-900 font-medium text-xl">
-                {"2.100" + " " + "DA"}
+                {moneyInfo?.total + " " + "DA"}
               </div>
             </div>
             <div
@@ -186,32 +234,8 @@ const currentSession = ({data}) => {
 
       <div className="col-12 xl:col-6">
         <div className="card ">
-          <h5>Active Delivery Boys</h5>
+          <h5>Delivery Boys for This Session</h5>
           <ul>
-            <li className="transform hover:scale-105 transition-transform flex items-center  px-2 py-3 rounded-md shadow-sm border card mb-3">
-              <Avatar
-                image="/images/delivery-boys-avatars/yasser.png"
-                size="large"
-                shape="circle"
-              />
-              <span className="font-medium ml-2">Khelil Yasser</span>
-            </li>
-            <li className="transform hover:scale-105 transition-transform flex items-center  px-2 py-3 rounded-md shadow-sm border card mb-3">
-              <Avatar
-                image="/images/delivery-boys-avatars/yasser.png"
-                size="large"
-                shape="circle"
-              />
-              <span className="font-medium ml-2">Khelil Yasser</span>
-            </li>
-            <li className="transform hover:scale-105 transition-transform flex items-center  px-2 py-3 rounded-md shadow-sm border card mb-3">
-              <Avatar
-                image="/images/delivery-boys-avatars/yasser.png"
-                size="large"
-                shape="circle"
-              />
-              <span className="font-medium ml-2">Khelil Yasser</span>
-            </li>
             <li className="transform hover:scale-105 transition-transform flex items-center  px-2 py-3 rounded-md shadow-sm border card mb-3">
               <Avatar
                 image="/images/delivery-boys-avatars/yasser.png"
@@ -227,14 +251,4 @@ const currentSession = ({data}) => {
   );
 };
 
-export async function getServerSideProps(ctx) {
-  const data = "serverSidePro";
-  
-
-  return {
-    props: {
-      data,
-    },
-  };
-}
 export default currentSession;

@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
   const { sessionId } = req.body;
-  console.log(sessionId);
   try {
     const orders = await prisma.order.findMany({
       where: {
