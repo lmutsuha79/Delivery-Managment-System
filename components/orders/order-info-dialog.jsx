@@ -1,7 +1,7 @@
 import { Dialog } from "primereact/dialog";
 
-import { Divider } from 'primereact/divider';
-        
+import { Divider } from "primereact/divider";
+
 const OrderInfoDialog = ({
   showOrderInfoDialogVisibility,
   setShowOrderInfoDialogVisibility,
@@ -46,12 +46,14 @@ const OrderInfoDialog = ({
           </p>
           <Divider />
 
-          <p>
-            <span className="font-bold">More Info:</span>{" "}
-            {currentShowOrderData.moreInfo
-              ? currentShowOrderData.moreInfo
-              : "none"}
-          </p>
+          <div>
+            <span className="font-bold block">More Info:</span>
+            <pre className="ml-2">
+              {currentShowOrderData.moreInfo
+                ? currentShowOrderData.moreInfo
+                : "none"}
+            </pre>
+          </div>
         </div>
       </div>
     </Dialog>

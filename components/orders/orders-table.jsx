@@ -135,7 +135,11 @@ const OrdersTable = ({
           header="Actions"
           body={(order) => (
             <div className="flex items-center gap-2">
-              <button onClick={() => handleEditOrder(order)} className="">
+              <button
+                disabled={order.status === "delivered"}
+                style={{cursor: order.status === "delivered" ? "not-allowed" : "pointer"}}
+                onClick={() => handleEditOrder(order)}
+              >
                 <FontAwesomeIcon
                   className="text-gray-700 hover:scale-110 transition-transform transform"
                   icon={faEdit}
@@ -179,7 +183,11 @@ const OrdersTable = ({
         <Column field="deliveryLocation" header="Quantity"></Column>
         <Column sortable field="money" header="Money"></Column>
 
-        <Column field="moreInfo" header="More Info"></Column>
+        <Column
+          field="moreInfo"
+          body={(order) => <pre>{order.moreInfo}</pre>}
+          header="More Info"
+        ></Column>
         <Column
           sortable
           body={(order) => {

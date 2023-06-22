@@ -42,19 +42,39 @@ export default async function handler(req, res) {
         .json({ error: "Invalid session ID or session has ended" });
     }
 
+    const prevOrderInfo = await prisma.order.findUnique({
+      where: { id },
+      select: {
+        status: true,
+        deliveredAt: true,
+      },
+    });
+
     const order = await prisma.order.update({
       where: { id },
       data: {
         status,
-        deliveredAt: status === "delivered" ? new Date() : null,
+        deliveredAt:
+          status === "delivered" && prevOrderInfo.status !== "delivered"
+            ? new Date()
+            : prevOrderInfo.deliveredAt,
         phoneNumber,
         customerName,
         moreInfo,
         pickUpLocation,
         deliveryLocation,
         money: parseFloat(money),
+
         deliveryBoy: {
           connect: { id: deliveryBoyId },
+          update: {
+            unpaid: {
+              increment:
+                status === "delivered" && prevOrderInfo.status !== "delivered"
+                  ? 60
+                  : 0,
+            },
+          },
         },
         session: {
           connect: { id: sessionId },

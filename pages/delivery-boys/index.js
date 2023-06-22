@@ -1,6 +1,6 @@
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
 import { Dialog } from "primereact/dialog";
@@ -9,10 +9,11 @@ import { InputText } from "primereact/inputtext";
 import NewBoyDialog from "@/components/delivery-boys/new-boy-dialog";
 import EditBoyDialog from "@/components/delivery-boys/edit-boy-dialog";
 import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
+import { SessionContext } from "../_app";
 
 const DeliveryBoys = () => {
- 
   // status of dialogs adding and edditing
+  const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [addNewBoyDialog, setAddNewBoyDialog] = useState(false);
   const [editBoyDialog, setEditBoyDialog] = useState(false);
 
@@ -22,7 +23,7 @@ const DeliveryBoys = () => {
 
   useEffect(() => {
     fetchDeliveryBoys().then((boys) => setDeliveryBoysList(boys));
-  }, [addNewBoyDialog, editBoyDialog]);
+  }, [addNewBoyDialog, editBoyDialog, currentSession]);
 
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -78,7 +79,11 @@ const DeliveryBoys = () => {
           )}
         ></Column>
         <Column field="phone" header="Phone Number"></Column>
-        <Column field="profiteForEveryDelivery" body={boy => <span>{`${boy.profiteForEveryDelivery} DA`}</span>} header="Profite / Delivery"></Column>
+        <Column
+          field="profiteForEveryDelivery"
+          body={(boy) => <span>{`${boy.profiteForEveryDelivery} DA`}</span>}
+          header="Profite / Delivery"
+        ></Column>
         <Column
           field="eddit"
           header="Eddit"

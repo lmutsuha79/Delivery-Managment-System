@@ -20,6 +20,7 @@ model DeliveryBoy {
   attendances             Attendance[]
   orders                  Order[]
   profiteForEveryDelivery Int          @default(60)
+  unpaid                  Float        @default(0)
 }
 
 model Session {

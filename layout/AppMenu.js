@@ -32,12 +32,12 @@ const AppMenu = () => {
         {
           label: "Payments",
           icon: "pi pi-fw pi-wallet",
-          to: "/Payments",
+          to: "/money-managment/Payments",
         },
         {
           label: "Workers Payments",
           icon: "pi pi-fw pi-users",
-          to: "/workers payments",
+          to: "/money-managment/workers-payments",
         },
       ],
     },
