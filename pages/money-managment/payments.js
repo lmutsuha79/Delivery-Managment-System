@@ -78,7 +78,6 @@ const Payments = () => {
         filterDisplay="row"
         globalFilterFields={["id", "createdAt", "amount", "deliveryBoy.name"]}
         emptyMessage="no results found"
-
         paginator
         rows={10}
         rowsPerPageOptions={[10, 25, 25, 50, 100]}
@@ -104,7 +103,12 @@ const Payments = () => {
           )}
           header="CreatedAt"
         ></Column>
-        <Column sortable field="amount" header="Money Amount"></Column>
+        <Column
+          sortable
+          field="amount"
+          body={(payment) => <span>{payment.amount + " " + "DA"}</span>}
+          header="Money"
+        ></Column>
         <Column
           sortable
           header="Name"

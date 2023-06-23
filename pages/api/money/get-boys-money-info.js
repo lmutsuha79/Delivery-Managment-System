@@ -6,33 +6,20 @@ export default async function handler(req, res) {
       include: {
         orders: true,
       },
-
     });
-    const deliveryBoysWithOrderCount = await Promise.all(
-      deliveryBoys.map(async (deliveryBoy) => {
-        const orderCount = await prisma.order.count({
-          where: {
-            deliveryBoyId: deliveryBoy.id,
-            status: "delivered",
 
-            
-          },
-        });
+    const deliveryBoysWithOrderCount = deliveryBoys.map((deliveryBoy) => {
+      const orderCount = deliveryBoy.orders.filter(
+        (order) => order.status === "delivered"
+      ).length;
 
-        return {
-          ...deliveryBoy,
-          orderCount,
-        };
-      })
-    );
-    const deliveryBoysWithCount = deliveryBoys.map((deliveryBoy) => {
       return {
         ...deliveryBoy,
-        orderCount: deliveryBoy.orders.length,
+        orderCount,
       };
     });
 
-    res.status(200).json(deliveryBoysWithCount);
+    res.status(200).json(deliveryBoysWithOrderCount);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });

@@ -1,5 +1,3 @@
-
-
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useContext, useEffect, useState } from "react";
@@ -28,7 +26,7 @@ const MoneyForCurentSession = () => {
     <div className="">
       <h4>Total Earning Of Delivery Boys In This Session</h4>
       <span className="text-primary_color">
-        Note That Only Delivery Boys Presented In this Session Will Appear Here{" "}
+        This list includes delivery boys present during this session only{" "}
       </span>
     </div>
   );
