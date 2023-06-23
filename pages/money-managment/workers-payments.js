@@ -14,9 +14,17 @@ import { fetchDeliveryBoys } from "@/lib/fetch-delivery-boys";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Avatar } from "primereact/avatar";
+import { Button } from "primereact/button";
+import { error_toast, sucess_toast } from "@/lib/toast-notifications";
+import { Dialog } from "primereact/dialog";
 
 // this table will contains every payment (id,crated_at,delivery_boy_id,paid_amount)
 const WorkersPayments = () => {
+  const [boysListToken, setBoysListToken] = useState(0);
+  function changeBoysListToken() {
+    setBoysListToken((prev) => prev + 1);
+  }
+
   const { currentSession, setCurrentSession } = useContext(SessionContext);
 
   const header = (
@@ -38,44 +46,120 @@ const WorkersPayments = () => {
 
     get_and_set_delivery_boys_money_info();
     console.log(deliveryBoysList);
-  }, [currentSession]);
+  }, [currentSession, boysListToken]);
+  async function handleSubmitPayment(boy) {
+    try {
+      const response = await fetch("/api/money/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deliveryBoyId: boy.id, amount: boy.unpaid }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data); // Handle the response data
+        sucess_toast("payment bill created successfully");
+        changeBoysListToken();
+      } else {
+        const errMessage = await response.json();
+        error_toast("Error:" + errMessage.error);
+        throw new Error(errMessage);
+      }
+    } catch (error) {
+      console.error("Error:", error.error);
+    }
+  }
+  const [selectedBoy, setSelectedBoy] = useState();
+  // function handleConfirmeSubmitNewPayment(boy) {
+  // }
 
-  return (
-    <DataTable
-      value={deliveryBoysList}
-      header={header}
-      // footer={footer}
-      tableStyle={{ minWidth: "60rem" }}
-    >
-      <Column field="id" header="Id"></Column>
-      <Column field="name" header="Name"></Column>
-      <Column
-        header="avatar"
-        body={(target) => (
-          <Avatar
-            size="large"
-            image={`/images/delivery-boys-avatars/${target.avatar}`}
-            shape="circle"
-          />
-        )}
-      ></Column>
-      <Column field="phone" header="Phone Number"></Column>
-      <Column
-        field="orderCount"
-        body={(boy) => <span>{`${boy.orderCount} Orders`}</span>}
-        header="Orders Delivered"
+  const [visible, setVisible] = useState(false);
+  const footerContent = (
+    <div>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        onClick={() => setVisible(false)}
+        className="p-button-text"
       />
-      <Column
-        field="profiteForEveryDelivery"
-        body={(boy) => <span>{`${boy.profiteForEveryDelivery} DA`}</span>}
-        header="Profite / Delivery"
-      ></Column>
-      <Column
-        field="profiteForEveryDelivery"
-        body={(boy) => <span>{`${boy.unpaid} DA`}</span>}
-        header="Unpaid Amount"
-      ></Column>
-    </DataTable>
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        onClick={() => {
+          handleSubmitPayment(selectedBoy);
+          setVisible(false);
+        }}
+        autoFocus
+      />
+    </div>
+  );
+  return (
+    <>
+      <Dialog
+        header="Payment Confirmation"
+        visible={visible}
+        style={{ width: "50vw" }}
+        onHide={() => setVisible(false)}
+        footer={footerContent}
+      >
+        <p className="text-lg">
+          Are you sure that you want to create new paymen bill for delivery boy:{" "}
+          <span className="font-medium text-lg">{selectedBoy.name}</span>
+        </p>
+        <p className="font-medium text-primary_color">
+          {" "}
+          Note that after submitting this action a new payment bill will added
+          to the payments table and the unpaid value of this delivery boy will
+          resets to 0
+        </p>
+      </Dialog>
+      <DataTable
+        value={deliveryBoysList}
+        header={header}
+        // footer={footer}
+        tableStyle={{ minWidth: "60rem" }}
+      >
+        <Column field="id" header="Id"></Column>
+        <Column field="name" header="Name"></Column>
+        <Column
+          header="avatar"
+          body={(boy) => (
+            <Avatar
+              size="large"
+              image={`/images/delivery-boys-avatars/${boy.avatar}`}
+              shape="circle"
+            />
+          )}
+        ></Column>
+        <Column field="phone" header="Phone Number"></Column>
+        <Column
+          field="orderCount"
+          body={(boy) => <span>{`${boy.orderCount} Orders`}</span>}
+          header="Orders Delivered"
+        />
+        <Column
+          field="profiteForEveryDelivery"
+          body={(boy) => <span>{`${boy.profiteForEveryDelivery} DA`}</span>}
+          header="Profite / Delivery"
+        ></Column>
+        <Column
+          field="profiteForEveryDelivery"
+          body={(boy) => <span>{`${boy.unpaid} DA`}</span>}
+          header="Unpaid Amount"
+        ></Column>
+        <Column
+          body={(boy) => (
+            <Button
+              onClick={() => {
+                setSelectedBoy(boy);
+                setVisible(true);
+              }}
+              label="Submit"
+            />
+          )}
+          header="Add Payment"
+        ></Column>
+      </DataTable>
+    </>
   );
 };
 

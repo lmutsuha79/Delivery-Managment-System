@@ -21,6 +21,16 @@ model DeliveryBoy {
   orders                  Order[]
   profiteForEveryDelivery Int          @default(60)
   unpaid                  Float        @default(0)
+  payments                Payment[]
+}
+
+model Payment {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deliveryBoy   DeliveryBoy @relation(fields: [deliveryBoyId], references: [id])
+  deliveryBoyId Int
+  amount        Float
 }
 
 model Session {
