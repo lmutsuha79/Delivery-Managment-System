@@ -94,24 +94,26 @@ const WorkersPayments = () => {
   );
   return (
     <>
-      <Dialog
-        header="Payment Confirmation"
-        visible={visible}
-        style={{ width: "50vw" }}
-        onHide={() => setVisible(false)}
-        footer={footerContent}
-      >
-        <p className="text-lg">
-          Are you sure that you want to create new paymen bill for delivery boy:{" "}
-          <span className="font-medium text-lg">{selectedBoy.name}</span>
-        </p>
-        <p className="font-medium text-primary_color">
-          {" "}
-          Note that after submitting this action a new payment bill will added
-          to the payments table and the unpaid value of this delivery boy will
-          resets to 0
-        </p>
-      </Dialog>
+      {visible && (
+        <Dialog
+          header="Payment Confirmation"
+          visible={visible}
+          style={{ width: "50vw" }}
+          onHide={() => setVisible(false)}
+          footer={footerContent}
+        >
+          <p className="text-lg">
+            Are you sure that you want to create new paymen bill for delivery
+            boy: <span className="font-medium text-lg">{selectedBoy.name}</span>
+          </p>
+          <p className="font-medium text-primary_color">
+            {" "}
+            Note that after submitting this action a new payment bill will added
+            to the payments table and the unpaid value of this delivery boy will
+            resets to 0
+          </p>
+        </Dialog>
+      )}
       <DataTable
         value={deliveryBoysList}
         header={header}
@@ -149,6 +151,8 @@ const WorkersPayments = () => {
         <Column
           body={(boy) => (
             <Button
+              disabled={boy.unpaid == 0}
+              style={{ cursor: boy.unpaid == 0 ? "not-allowed" : "pointer" }}
               onClick={() => {
                 setSelectedBoy(boy);
                 setVisible(true);

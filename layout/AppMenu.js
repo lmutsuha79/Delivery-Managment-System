@@ -30,9 +30,9 @@ const AppMenu = () => {
       label: "Money Managment",
       items: [
         {
-          label: "Payments",
+          label: "Payments Bills",
           icon: "pi pi-fw pi-wallet",
-          to: "/money-managment/Payments",
+          to: "/money-managment/payments",
         },
         {
           label: "Workers Payments",

@@ -49,7 +49,6 @@ const OrdersTable = ({
   });
 
   const onGlobalFilterChange = (e) => {
-    console.log("hello");
     const value = e.target.value;
     let _filters = { ...filters };
     _filters["global"].value = value;
