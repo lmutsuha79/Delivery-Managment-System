@@ -142,7 +142,13 @@ const AllSessionsInfo = () => {
   };
 
   const header = (
-    <div className="flex flex-wrap justify-content-end gap-2"></div>
+    <div className="">
+      <h3>Sessions Info Table</h3>
+      <p className="text-primary_color">
+        this table contains: orders for every session, delivery boys attendance
+        for every session, delivery completed orders for every session
+      </p>
+    </div>
   );
 
   return (
@@ -187,6 +193,16 @@ const AllSessionsInfo = () => {
               minute: "numeric",
             })
           }
+        />
+        <Column
+          sortable
+          header="Orders"
+          body={(sessionInfo) => sessionInfo.orders.length}
+        />
+        <Column
+          sortable
+          header="Attendance"
+          body={(sessionInfo) => sessionInfo.attendances.length}
         />
       </DataTable>
     </>
