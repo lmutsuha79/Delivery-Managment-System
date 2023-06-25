@@ -76,7 +76,7 @@ const SessionStatus = () => {
         header={<div>Warning!</div>}
         visible={confirmationDialogStatus}
         style={{ width: "50vw" }}
-        onHide={() => confirmationDialogStatus(false)}
+        onHide={() => setConfirmationDialogStatus(false)}
         footer={
           <div>
             <Button

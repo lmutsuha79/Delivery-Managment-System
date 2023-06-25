@@ -14,7 +14,19 @@ const AppMenu = () => {
     {
       label: "Home",
 
-      items: [{ label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" }],
+      items: [
+        { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
+        {
+          label: "All Orders",
+          icon: "pi pi-fw pi-shopping-cart",
+          to: "/all-orders",
+        },
+        {
+          label: "All Sessions Info",
+          icon: "pi pi-fw pi-spinner",
+          to: "/all-sessions-info",
+        },
+      ],
     },
     {
       label: "Delivery Boys Managment",

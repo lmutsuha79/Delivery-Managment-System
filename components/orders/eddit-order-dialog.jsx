@@ -60,6 +60,7 @@ const EdditOrderDialog = ({
           ...formData,
           sessionId: currentSession.sessionId,
           deliveryBoyId: formData.deliveryBoy.id,
+          profiteForEveryDelivery: formData.deliveryBoy.profiteForEveryDelivery,
           status: formData.status.name,
         }),
       });

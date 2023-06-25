@@ -86,7 +86,7 @@ const DeliveryBoys = () => {
         ></Column>
         <Column
           field="eddit"
-          header="Eddit"
+          header="Edit"
           body={(target) => (
             <Button
               onClick={() => {
@@ -95,7 +95,7 @@ const DeliveryBoys = () => {
               }}
               size="small"
             >
-              Eddit
+              Edit
             </Button>
           )}
         ></Column>

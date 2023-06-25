@@ -17,6 +17,7 @@ export default async function handler(req, res) {
       deliveryBoyId,
       sessionId,
       status,
+      profiteForEveryDelivery,
     } = req.body;
     // Check if the delivery boy exists
     const deliveryBoy = await prisma.deliveryBoy.findUnique({
@@ -71,7 +72,7 @@ export default async function handler(req, res) {
             unpaid: {
               increment:
                 status === "delivered" && prevOrderInfo.status !== "delivered"
-                  ? 60
+                  ? profiteForEveryDelivery
                   : 0,
             },
           },

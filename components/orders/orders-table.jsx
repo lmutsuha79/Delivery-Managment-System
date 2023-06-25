@@ -22,11 +22,13 @@ import { Tag } from "primereact/tag";
 import OrderInfoDialog from "./order-info-dialog";
 
 const OrdersTable = ({
+  showSession,
   showUpAddOrderDialog,
   tableTitle,
   orders,
   changeOrdersToken,
 }) => {
+  console.log(orders)
   const [showOrderInfoDialogVisibility, setShowOrderInfoDialogVisibility] =
     useState(false);
   const [currentShowOrderData, setCurrentShowOrderData] = useState(null);
@@ -59,9 +61,11 @@ const OrdersTable = ({
   const header = (
     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
       <span className="text-xl text-900 font-bold">{tableTitle}</span>
-      <Button icon="pi pi-plus" rounded raised onClick={showUpAddOrderDialog}>
-        <span className="pl-2 text-lg"> create new order</span>
-      </Button>
+      {showUpAddOrderDialog && (
+        <Button icon="pi pi-plus" rounded raised onClick={showUpAddOrderDialog}>
+          <span className="pl-2 text-lg"> create new order</span>
+        </Button>
+      )}
       <div className="flex justify-end items-center">
         <span className="p-input-icon-left">
           <FontAwesomeIcon icon={faSearch} />
@@ -127,6 +131,7 @@ const OrdersTable = ({
           "deliveryLocation",
           "pickUpLocation",
           "money",
+          "session.id",
         ]}
         emptyMessage="no results found"
       >
@@ -136,7 +141,10 @@ const OrdersTable = ({
             <div className="flex items-center gap-2">
               <button
                 disabled={order.status === "delivered"}
-                style={{cursor: order.status === "delivered" ? "not-allowed" : "pointer"}}
+                style={{
+                  cursor:
+                    order.status === "delivered" ? "not-allowed" : "pointer",
+                }}
                 onClick={() => handleEditOrder(order)}
               >
                 <FontAwesomeIcon
@@ -154,6 +162,10 @@ const OrdersTable = ({
           )}
         ></Column>
         <Column field="id" header="Id" sortable></Column>
+        {showSession && (
+          <Column field="session.id" header="Session Id" sortable></Column>
+        )}
+
         <Column
           sortable
           field="status"
@@ -174,13 +186,18 @@ const OrdersTable = ({
               <span>{order.deliveryBoy.name}</span>
             </div>
           )}
-          header="Deliver Boy"
+          header="Delivery Boy"
         ></Column>
-        <Column field="phoneNumber" header="Phone"></Column>
+        <Column field="phoneNumber" header="Phone Number"></Column>
         <Column sortable field="customerName" header="Customer Name"></Column>
         <Column field="pickUpLocation" header="Pick Up Location"></Column>
         <Column field="deliveryLocation" header="Quantity"></Column>
-        <Column sortable field="money" header="Money"></Column>
+        <Column
+          sortable
+          field="money"
+          body={(order) => order.money + " DA"}
+          header="Money"
+        ></Column>
 
         <Column
           field="moreInfo"

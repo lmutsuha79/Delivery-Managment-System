@@ -15,9 +15,10 @@ import { SessionContext } from "../_app";
 const currentSession = () => {
   const { currentSession, setCurrentSession } = useContext(SessionContext);
 
-  const [moneyInfo, setMoneyInfo] = useState();
-  console.log(currentSession.sessionId);
+  const [currentOrdersCounterInfo, setCurrentOrdersCounterInfo] = useState();
   const [deliveryBoysList, setDeliveryBoysList] = useState([]);
+
+  const [earningsInfo_for_boys, setEarningsInfo_for_boys] = useState();
   useEffect(() => {
     async function get_and_set_active_boys() {
       try {
@@ -39,26 +40,36 @@ const currentSession = () => {
       }
       // const boys = await fetchDeliveryBoys();
     }
-    async function get_money_info() {
-      try {
-        const response = await fetch("/api/money/get-current-money-info", {
-          method: "POST",
-          body: JSON.stringify({ sessionId: currentSession.sessionId }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const { report } = await response.json();
-        console.log(report);
 
-        setMoneyInfo(report);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    async function get_set_DeliveryBoysEarningInfo() {
+      const res = await fetch("/api/money/get-current-money-info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: currentSession.sessionId }),
+      });
+      const { deliveryBoysWithEarnings } = await res.json();
+      console.log(deliveryBoysWithEarnings);
+      setEarningsInfo_for_boys(deliveryBoysWithEarnings);
+    }
+
+    async function get_set_current_earnings_info() {
+      const response = await fetch(`/api/money/get-current-earnings-info`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: currentSession.sessionId }),
+      });
+      const data = await response.json();
+      console.log(data);
+      setCurrentOrdersCounterInfo(data);
     }
 
     if (currentSession.sessionId) {
-      get_money_info();
-      get_and_set_active_boys();
+      // get_and_set_active_boys();
+      get_set_DeliveryBoysEarningInfo();
+      get_set_current_earnings_info();
     }
+
+    console.log(earningsInfo_for_boys);
   }, [currentSession]);
 
   return (
@@ -71,7 +82,7 @@ const currentSession = () => {
                 Total revenue for this session
               </span>
               <div className="text-900 font-medium text-xl">
-                {moneyInfo?.total + " " + "DA"}
+                {currentOrdersCounterInfo?.totalMoney + " " + "DA"}
               </div>
             </div>
             <div
@@ -92,7 +103,9 @@ const currentSession = () => {
               <span className="block text-500 font-medium mb-3">
                 Orders for this session
               </span>
-              <div className="text-900 font-medium text-xl">152 Orders</div>
+              <div className="text-900 font-medium text-xl">
+                {currentOrdersCounterInfo?.totalOrders} Orders
+              </div>
             </div>
             <div
               className="flex align-items-center justify-content-center bg-blue-100 border-round"
@@ -113,7 +126,9 @@ const currentSession = () => {
               <span className="block text-500 font-medium mb-3">
                 Delivered orders in this session
               </span>
-              <div className="text-900 font-medium text-xl">28441 Orders</div>
+              <div className="text-900 font-medium text-xl">
+                {currentOrdersCounterInfo?.deliveredOrders} Orders
+              </div>
             </div>
             <div
               className="flex align-items-center justify-content-center bg-cyan-100 border-round"
@@ -133,7 +148,9 @@ const currentSession = () => {
               <span className="block text-500 font-medium mb-3">
                 canceled orders in this session
               </span>
-              <div className="text-900 font-medium text-xl">152 Orders</div>
+              <div className="text-900 font-medium text-xl">
+                {currentOrdersCounterInfo?.canceledOrders} Orders
+              </div>
             </div>
             <div
               className="flex align-items-center justify-content-center bg-purple-100 border-round"
@@ -149,7 +166,7 @@ const currentSession = () => {
       <div className="col-12 xl:col-6">
         <div className="card ">
           <h5>Recent Orders</h5>
-          <div>
+          {/* <div>
             <ul className="">
               <li className="transform hover:scale-105 transition-transform flex items-center justify-between px-2 py-3 rounded-md shadow-sm border card mb-3">
                 <div>
@@ -228,7 +245,7 @@ const currentSession = () => {
                 </div>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -236,14 +253,27 @@ const currentSession = () => {
         <div className="card ">
           <h5>Delivery Boys for This Session</h5>
           <ul>
-            <li className="transform hover:scale-105 transition-transform flex items-center  px-2 py-3 rounded-md shadow-sm border card mb-3">
-              <Avatar
-                image="/images/delivery-boys-avatars/yasser.png"
-                size="large"
-                shape="circle"
-              />
-              <span className="font-medium ml-2">Khelil Yasser</span>
-            </li>
+            {earningsInfo_for_boys?.map((info) => (
+              <li
+                key={info.deliveryBoy.id}
+                className="transform hover:scale-105 transition-transform flex items-center  justify-between px-2 py-3 rounded-md shadow-sm border card mb-3"
+              >
+                <div className="flex items-center gap-2">
+                  <Avatar
+                    image={`/images/delivery-boys-avatars/${info.deliveryBoy.avatar}`}
+                    size="large"
+                    shape="circle"
+                  />
+                  <span className="font-medium ml-2">
+                    {info.deliveryBoy.name}
+                  </span>
+                  
+                </div>
+                <span className="text-primary_color">
+                  {info.completedOrders} delivered Orders
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

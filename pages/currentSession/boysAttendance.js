@@ -100,7 +100,7 @@ const boysAttendance = () => {
             />
           )}
         ></Column>
-        <Column field="phone" header="Pone"></Column>
+        <Column field="phone" header="Phone Number"></Column>
         <Column
           field="status"
           header="Status"
