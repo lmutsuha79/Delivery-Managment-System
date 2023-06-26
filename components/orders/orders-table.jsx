@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { Avatar } from "primereact/avatar";
 import { SessionContext } from "@/pages/_app";
 import OrderStatusTag from "./order-status-tag";
+import { error_toast, sucess_toast } from "@/lib/toast-notifications";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
@@ -12,6 +14,7 @@ import {
   faRefresh,
   faSearch,
   faShower,
+  faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import EdditOrderDialog from "./eddit-order-dialog";
 import ChangeOrderStatus from "./change-order-status";
@@ -28,7 +31,7 @@ const OrdersTable = ({
   orders,
   changeOrdersToken,
 }) => {
-  console.log(orders)
+  console.log(orders);
   const [showOrderInfoDialogVisibility, setShowOrderInfoDialogVisibility] =
     useState(false);
   const [currentShowOrderData, setCurrentShowOrderData] = useState(null);
@@ -42,6 +45,27 @@ const OrdersTable = ({
   function handleEditOrder(order) {
     setCurrentEditbleOrderData(order);
     setEdditOrderDialogStatus(true);
+  }
+  async function handleMarkOrderAsDone(order) {
+    try {
+      const res = await fetch("/api/orders/mark-order-delivered", {
+        body: JSON.stringify({ orderId: order.id }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+
+      if (res.ok) {
+        const updatedOrder = await res.json();
+        sucess_toast("order marked as delivered", updatedOrder.id);
+        changeOrdersToken();
+        return updatedOrder;
+      } else {
+        error_toast("Failed to mark the order as delivered");
+        throw new Error("Failed to mark the order as delivered");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -158,9 +182,24 @@ const OrdersTable = ({
                   className="text-gray-700 hover:scale-110 transition-transform transform"
                 />
               </button>
+
+              <button
+                disabled={order.status === "delivered"}
+                style={{
+                  cursor:
+                    order.status === "delivered" ? "not-allowed" : "pointer",
+                }}
+                onClick={() => handleMarkOrderAsDone(order)}
+              >
+                <FontAwesomeIcon
+                  className="text-gray-700 hover:scale-110 transition-transform transform"
+                  icon={faSquareCheck}
+                />
+              </button>
             </div>
           )}
         ></Column>
+
         <Column field="id" header="Id" sortable></Column>
         {showSession && (
           <Column field="session.id" header="Session Id" sortable></Column>

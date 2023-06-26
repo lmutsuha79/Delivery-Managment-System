@@ -77,7 +77,7 @@ const EdditOrderDialog = ({
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Failed to update order");
+      // throw new Error("Failed to update order");
     }
   }
 
