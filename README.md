@@ -6,3 +6,7 @@
 # Notes:
 
 - add a short cut path to the foalder that contains the delivery boys avatars
+
+
+* repertoir nums register 
+* phone number directly
