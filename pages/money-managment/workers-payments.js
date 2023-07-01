@@ -133,11 +133,11 @@ const WorkersPayments = () => {
           )}
         ></Column>
         <Column field="phone" header="Phone Number"></Column>
-        <Column
-          field="orderCount"
-          body={(boy) => <span>{`${boy.orderCount} Orders`}</span>}
-          header="Orders Delivered"
-        />
+          {/* <Column
+            field="orderCount"
+            body={(boy) => <span>{`${boy.orderCount} Orders`}</span>}
+            header="Orders Delivered"
+          /> */}
         <Column
           field="profiteForEveryDelivery"
           body={(boy) => <span>{`${boy.profiteForEveryDelivery} DA`}</span>}

@@ -9,11 +9,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { useContext, useState } from "react";
+import { useRouter } from "next/router";
 
 const SessionStatus = () => {
   const { currentSession, setCurrentSession } = useContext(SessionContext);
   const [confirmationDialogStatus, setConfirmationDialogStatus] =
     useState(false);
+  const router = useRouter();
+
   async function handleStartSession() {
     try {
       const response = await fetch("/api/create-session", { method: "POST" });
@@ -89,8 +92,9 @@ const SessionStatus = () => {
               label="Yes"
               icon="pi pi-check"
               onClick={() => {
-                setConfirmationDialogStatus(false);
                 handleStopSession();
+                setConfirmationDialogStatus(false);
+                router.push("/all-orders");
               }}
               autoFocus
             />

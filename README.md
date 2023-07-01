@@ -4,9 +4,11 @@
 - add payments
 
 # Notes:
-
-- add a short cut path to the foalder that contains the delivery boys avatars
+add a shortcut path to the foalder that contains the delivery boys avatars
 
 
 * repertoir nums register 
-* phone number directly
+* add password for admin 
+* add overviw (months, select period,year)
+* add confimation on close session  =+> "ok"
+* add redirections in difrents layer   ==> "ok"
